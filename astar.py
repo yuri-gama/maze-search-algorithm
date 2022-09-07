@@ -10,7 +10,7 @@ def h(p1, p2):
     # return abs(x1 - x2) + abs(y1 - y2)
 
 
-def algorithm_bfs(draw, grid, start, end, draw_path, save_img):
+def algorithm_bfs(draw, grid, start, end, save_img):
     stack = [start]
     start.score = 0
     save_img()
@@ -46,11 +46,10 @@ def algorithm_bfs(draw, grid, start, end, draw_path, save_img):
     return False
 
 
-def algorithm(draw, grid, start, end, draw_path):
+def algorithm(draw, grid, start, end, save_img):
     count = 0
     open_set = PriorityQueue()
     open_set.put((0, count, start))
-    came_from = {}
     g_score = {node: float("inf") for row in grid for node in row}
     f_score = {node: float("inf") for row in grid for node in row}
     g_score[start] = 0
@@ -67,9 +66,11 @@ def algorithm(draw, grid, start, end, draw_path):
         open_set_hash.remove(current)
 
         if current == end:
-            draw_path(came_from, end, draw)
+            current.draw_path(draw, save_img)
             end.make_end()
             start.make_start()
+            draw()
+            save_img()
             print(g_score[end])
             return True
 
@@ -77,7 +78,7 @@ def algorithm(draw, grid, start, end, draw_path):
             temp_g_score = g_score[current] + 1
 
             if temp_g_score < g_score[neighbor]:
-                came_from[neighbor] = current
+                neighbor.came_from = current
                 g_score[neighbor] = temp_g_score
                 f_score[neighbor] = temp_g_score + h(neighbor.get_pos(), end.get_pos())
                 if neighbor not in open_set_hash:
@@ -87,6 +88,7 @@ def algorithm(draw, grid, start, end, draw_path):
                     neighbor.make_open()
 
         draw()
+        save_img()
 
         if current != start:
             current.make_closed()
