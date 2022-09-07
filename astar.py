@@ -10,6 +10,42 @@ def h(p1, p2):
     # return abs(x1 - x2) + abs(y1 - y2)
 
 
+def algorithm_bfs(draw, grid, start, end, draw_path, save_img):
+    stack = [start]
+    start.score = 0
+    save_img()
+    while len(stack):
+
+        current = stack.pop(0)
+
+        if current == end:
+            current.draw_path(draw, save_img)
+            end.make_end()
+            start.make_start()
+            draw()
+            save_img()
+            print(current.score)
+            return True
+
+        for node in current.neighbors:
+            if node not in stack and not node.visited:
+                if node == start:
+                    print('aq')
+                node.score = current.score + 1
+                stack.append(node)
+                node.came_from = current
+                node.make_open()
+
+        current.make_visited()
+        if current != start:
+            current.make_closed()
+
+        draw()
+        save_img()
+
+    return False
+
+
 def algorithm(draw, grid, start, end, draw_path):
     count = 0
     open_set = PriorityQueue()

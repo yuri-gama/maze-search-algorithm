@@ -12,6 +12,19 @@ class Node:
         self.neighbors = []
         self.width = width
         self.total_rows = total_rows
+        self.came_from = None
+        self.score = float("inf")
+        self.visited = False
+
+    def draw_path(self, draw, save_img):
+        if self.came_from is not None:
+            self.came_from.draw_path(draw, save_img)
+        self.make_path()
+        draw()
+        save_img()
+
+    def make_visited(self):
+        self.visited = True
 
     def get_pos(self):
         return self.row, self.col

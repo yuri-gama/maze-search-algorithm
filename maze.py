@@ -1,6 +1,28 @@
 from model import *
 from astar import *
 import load_map
+import imageio.v3 as imageio
+import imageio.v2 as iio
+import os
+
+
+def save_img(window, n, path="./img/{n}"):
+    n[0] += 1
+    pygame.image.save(window, path.format(n=n[0]))
+
+
+def generate_gif(path="./img/"):
+    images_files = os.listdir(path)
+    images_files = [int(img) for img in images_files]
+    images_files = sorted(images_files)
+    images = []
+    for img in images_files:
+        images.append(imageio.imread(os.path.join(path, str(img))))
+
+    imageio.imwrite('./movie.gif', images)
+    for file in images_files:
+        os.remove(os.path.join(path, str(file)))
+    print('done')
 
 
 def draw_path(came_from, current, draw):
@@ -105,9 +127,10 @@ def main(window, rows, width):
                     for row in grid:
                         for node in row:
                             node.update_neighbors(grid)
-
-                    algorithm(lambda: draw(window, grid, rows, width), grid, start, end, draw_path)
-
+                    n = [0]
+                    algorithm_bfs(lambda: draw(window, grid, rows, width), grid, start, end, draw_path,
+                                  lambda: save_img(window, n))
+                    generate_gif()
                 if event.key == pygame.K_l:
                     start, end = load_map.project01(grid)
 
