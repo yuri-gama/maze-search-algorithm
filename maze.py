@@ -19,7 +19,7 @@ def generate_gif(path="./img/"):
     for img in images_files:
         images.append(imageio.imread(os.path.join(path, str(img))))
 
-    imageio.imwrite('./solution_astar.gif', images)
+    imageio.imwrite('./solution.gif', images)
     for file in images_files:
         os.remove(os.path.join(path, str(file)))
     print('gif generated')
@@ -128,7 +128,7 @@ def main(window, rows, width):
                         for node in row:
                             node.update_neighbors(grid)
                     n = [0]
-                    algorithm(lambda: draw(window, grid, rows, width), grid, start, end,
+                    algorithm_bfs(lambda: draw(window, grid, rows, width), grid, start, end,
                               lambda: save_img(window, n))
                     generate_gif()
                 if event.key == pygame.K_l:
